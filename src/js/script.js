@@ -2,7 +2,7 @@
   'use strict';
   const select = {
     templateOf: {
-      bookList: '#template-book',
+      book: '#template-book',
     },
   };
 
@@ -13,6 +13,24 @@
     }
   };
 
+  const templates = {
+    bookList: Handlebars.compile(document.querySelector(select.templateOf.book).innerHTML),
+  };
+
+  class Book {
+    constructor(id, data) {
+
+    }
+  }
+
+  class BookList {
+    constructor(id, data) {
+      const thisBookList = this;
+      
+    }
+    renderBooklist()
+
+  }
   const app = {
     initData: function(){
       const thisApp = this;

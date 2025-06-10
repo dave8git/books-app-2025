@@ -4,6 +4,9 @@
     templateOf: {
       book: '#template-book',
     },
+    containerOf: {
+      bookList: '.books-list',
+    },
   };
 
   const settings ={
@@ -25,10 +28,17 @@
       thisBook.renderBook();
     }
 
+    getElements() {
+      const thisBook = this;
+      thisBook.dom = {};
+    }
+
     renderBook() {
       const thisBook = this;
       const generatedHTML = templates.book(thisBook.data);
       thisBook.element = utils.createDOMFromHTML(generatedHTML);
+      const booksContainer = document.querySelector('.books-list');
+      booksContainer.appendChild(thisBook.element);
       console.log(thisBook.element);
     }
   }

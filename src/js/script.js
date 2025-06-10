@@ -37,7 +37,7 @@
       const thisBook = this;
       const generatedHTML = templates.book(thisBook.data);
       thisBook.element = utils.createDOMFromHTML(generatedHTML);
-      const booksContainer = document.querySelector('.books-list');
+      const booksContainer = document.querySelector(select.containerOf.bookList);
       booksContainer.appendChild(thisBook.element);
       console.log(thisBook.element);
     }

@@ -14,42 +14,40 @@
   };
 
   const templates = {
-    bookList: Handlebars.compile(document.querySelector(select.templateOf.book).innerHTML),
+    book: Handlebars.compile(document.querySelector(select.templateOf.book).innerHTML),
   };
 
-  //   class Book {
-  //     constructor(id, data) {
+  class Book {
+    constructor(id, data) {
+      const thisBook = this;
+      thisBook.id = id;
+      thisBook.data = data;
+      thisBook.renderBook();
+    }
 
-  //     }
-
-  //     renderBook() {
-  //     }
-  //   }
+    renderBook() {
+      const thisBook = this;
+      const generatedHTML = templates.book(thisBook.data);
+      thisBook.element = utils.createDOMFromHTML(generatedHTML);
+      console.log(thisBook.element);
+    }
+  }
 
   class BookList {
     constructor(booksData) {
       const thisBookList = this;
       thisBookList.data = booksData;
-
       thisBookList.renderBooklist();
     }
-
-
     renderBooklist() {
       const thisBookList =this;
 
       console.log(thisBookList.data);
       for (let bookData in thisBookList.data) {
-        console.log(thisBookList.data[bookData].id, thisBookList.data[bookData]); // TUTAJ ZROBIĆ COŚ TAKIEGO new Book(bookdata)
+        new Book(thisBookList.data[bookData].id, thisBookList.data[bookData]);
       }
-    //   for (let bookData of thisBookList.data.books) {
-    //     console.log(bookData);
-    //     // new Book(thisApp.data.products[productData].id, thisApp.data.products[productData]);
-    //   }
     }
-
   }
-
 
   const app = {
     initBookList: function() {

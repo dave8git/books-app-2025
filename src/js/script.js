@@ -7,6 +7,9 @@
     containerOf: {
       bookList: '.books-list',
     },
+    element: {
+      book: '.book__image',
+    },
   };
 
   const settings ={
@@ -27,13 +30,12 @@
       thisBook.data = data;
       thisBook.renderBook();
       thisBook.getElements();
-      thisBook.initActions();
     }
 
     getElements() {
       const thisBook = this;
       thisBook.dom = {};
-      thisBook.dom.bookImage = thisBook.element.querySelector('.book__image');
+      thisBook.dom.bookImage = thisBook.element.querySelector(select.element.book);
     }
 
     renderBook() {
@@ -42,27 +44,6 @@
       thisBook.element = utils.createDOMFromHTML(generatedHTML);
       const booksContainer = document.querySelector(select.containerOf.bookList);
       booksContainer.appendChild(thisBook.element);
-    }
-
-    initActions() {
-      const thisBook = this;
-      thisBook.dom.bookImage.addEventListener('click', (event) => {
-        event.preventDefault();
-        thisBook.dom.bookImage.classList.toggle('favorite');
-        thisBook.announce();
-      });
-    }
-
-    announce() {
-      const thisBook = this;
-      console.log('announce');
-      const event = new CustomEvent('liked', {
-        bubbles: true,
-        detail: {
-          id: thisBook.id
-        }
-      });
-      thisBook.element.dispatchEvent(event);
     }
   }
 
@@ -77,10 +58,7 @@
 
     renderBooklist() {
       const thisBookList = this;
-
-      //console.log(thisBookList.data);
       for (let bookData in thisBookList.data) {
-        // console.log('data', thisBookList.data[bookData].id, thisBookList.data[bookData]);
         new Book(thisBookList.data[bookData].id, thisBookList.data[bookData]);
       }
     }
@@ -88,15 +66,23 @@
     initActions() {
       const thisBookList = this;
       const booksContainer = document.querySelector(select.containerOf.bookList);
-      booksContainer.addEventListener('liked', (e) => {thisBookList.addToFavorites(e.detail);});
+      
+      booksContainer.addEventListener('click', 
+        function(e) { 
+          const bookImage = e.target.closest('.book__image');
+          bookImage.classList.toggle('favorite');
+          const bookId = bookImage.getAttribute('data-id');
+          thisBookList.addToFavorites(bookId);
+        }
+      );
     }
 
-    addToFavorites(detail) {
+    addToFavorites(id) {
       const thisBookList = this;
-      if(thisBookList.favoriteBooks.has(detail.id)) {
-        thisBookList.favoriteBooks.delete(detail.id);
+      if(thisBookList.favoriteBooks.has(id)) {
+        thisBookList.favoriteBooks.delete(id);
       } else {
-        thisBookList.favoriteBooks.add(detail.id);
+        thisBookList.favoriteBooks.add(id);
       }
       console.log('thisBookList.favoriteBooks', thisBookList.favoriteBooks);
     }

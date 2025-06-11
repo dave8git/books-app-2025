@@ -11,7 +11,7 @@
       book: '.book__image',
     },
     selectors: {
-      filters: 'input[name="filter"]',
+      filters: '.filters',
     },
   };
 
@@ -55,7 +55,8 @@
       const thisBookList = this;
       thisBookList.data = booksData;
       thisBookList.favoriteBooks = new Set();
-      thisBookList.filters = [];
+      thisBookList.filters = new Set();
+      thisBookList.books = [];
       thisBookList.renderBooklist();
       thisBookList.initActions();
     }
@@ -63,14 +64,14 @@
     renderBooklist() {
       const thisBookList = this;
       for (let bookData in thisBookList.data) {
-        new Book(thisBookList.data[bookData].id, thisBookList.data[bookData]);
+        thisBookList.books.push(new Book(thisBookList.data[bookData].id, thisBookList.data[bookData]));
       }
     }
 
     initActions() {
       const thisBookList = this;
       const booksContainer = document.querySelector(select.containerOf.bookList);
-      const filters = document.querySelectorAll(select.selectors.filters);
+      const filters = document.querySelector(select.selectors.filters);
       booksContainer.addEventListener('click', 
         function(e) { 
           const bookImage = e.target.closest('.book__image');
@@ -79,12 +80,40 @@
           thisBookList.addToFavorites(bookId);
         }
       );
-      filters.forEach(filter => {
-        filter.addEventListener('change', (event) => {
-          const isChecked = event.target.checked;
-          const value = event.target.value;
-        });
+      filters.addEventListener('change', (e) => {
+        const target = e.target;
+        if (target.name === 'filter' && target.type === 'checkbox') {
+          const isChecked = target.checked;
+          const value = target.value;
+          // console.log('value', value);
+          // console.log(e.target);
+          if(thisBookList.filters.has(value)) {
+            thisBookList.filters.delete(value);
+          } else if (isChecked && !thisBookList.favoriteBooks.has(value)) {
+            thisBookList.filters.add(value);
+          }
+          thisBookList.hideBooks();
+        }
       });
+    }
+
+    hideBooks() {
+      const thisBookList = this;
+
+      for (const book of thisBookList.books) {
+        let shouldBeHidden = false;
+        for (const filter of thisBookList.filters) {
+          if(!book.data.details[filter]) {
+            shouldBeHidden = true;
+            break;
+          }
+        }
+        if (shouldBeHidden) {
+          book.dom.bookImage.classList.add('hidden');
+        } else {
+          book.dom.bookImage.classList.remove('hidden');
+        }
+      }
     }
 
     addToFavorites(id) {
@@ -94,7 +123,6 @@
       } else {
         thisBookList.favoriteBooks.add(id);
       }
-      console.log('thisBookList.favoriteBooks', thisBookList.favoriteBooks);
     }
   }
 

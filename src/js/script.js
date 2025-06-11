@@ -10,6 +10,9 @@
     element: {
       book: '.book__image',
     },
+    selectors: {
+      filters: 'input[name="filter"]',
+    },
   };
 
   const settings ={
@@ -52,6 +55,7 @@
       const thisBookList = this;
       thisBookList.data = booksData;
       thisBookList.favoriteBooks = new Set();
+      thisBookList.filters = [];
       thisBookList.renderBooklist();
       thisBookList.initActions();
     }
@@ -66,7 +70,7 @@
     initActions() {
       const thisBookList = this;
       const booksContainer = document.querySelector(select.containerOf.bookList);
-      
+      const filters = document.querySelectorAll(select.selectors.filters);
       booksContainer.addEventListener('click', 
         function(e) { 
           const bookImage = e.target.closest('.book__image');
@@ -75,6 +79,12 @@
           thisBookList.addToFavorites(bookId);
         }
       );
+      filters.forEach(filter => {
+        filter.addEventListener('change', (event) => {
+          const isChecked = event.target.checked;
+          const value = event.target.value;
+        });
+      });
     }
 
     addToFavorites(id) {
